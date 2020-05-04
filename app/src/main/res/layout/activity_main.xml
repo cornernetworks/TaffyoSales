@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff">
+
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="8dp"
+                app:cardUseCompatPadding="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constrainLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:transitionName="sharedTransationConstrain">
+
+                    <androidx.appcompat.widget.Toolbar
+                        android:id="@+id/toolbar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                    </androidx.appcompat.widget.Toolbar>
+
+                    <!--                <ImageView-->
+                    <!--                    android:id="@+id/toolbar"-->
+                    <!--                    android:layout_width="wrap_content"-->
+                    <!--                    android:layout_height="match_parent"-->
+                    <!--                    android:layout_marginStart="8dp"-->
+                    <!--                    android:src="@drawable/ic_menu_black_24dp"-->
+                    <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+                    <!--                    app:layout_constraintStart_toStartOf="parent"-->
+                    <!--                    app:layout_constraintTop_toTopOf="parent" />-->
+
+                    <TextView
+                        android:id="@+id/search_bar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@android:color/transparent"
+                        android:hint="Search..."
+                        android:minWidth="100dp"
+                        android:textSize="18dp"
+                        android:transitionName="searchTransationConstrain"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/toolbar"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/user_profile"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="10dp"
+                        android:src="@drawable/user_image"
+                        android:transitionName="profileTransationConstrain"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                tools:itemCount="5"
+                tools:listitem="@layout/single_view" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:visibility="invisible"
+                android:backgroundTint="@color/colorPrimary"
+                android:clickable="true"
+                android:src="@drawable/add"
+                app:fabSize="normal"
+                android:transitionName="fabTransationConstrain"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:rippleColor="@color/colorPrimaryDark" />
+
+            <TextView
+                android:id="@+id/qr_scan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="32dp"
+                android:background="@drawable/fab_text_bg"
+                android:fontFamily="@font/raleway_semibold"
+                android:paddingStart="16dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:paddingTop="8dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="8dp"
+                android:text="QR Scan"
+                app:layout_constraintBottom_toTopOf="@+id/fab"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="16dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:background="@drawable/fab_text_bg"
+                android:fontFamily="@font/raleway_semibold"
+                android:paddingStart="16dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="8dp"
+                android:text="Search"
+                app:layout_constraintBottom_toTopOf="@+id/qr_scan"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/create_New"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/fab_text_bg"
+                android:fontFamily="@font/raleway_semibold"
+                android:paddingStart="16dp"
+                android:paddingTop="8dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="16dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="8dp"
+                android:text="Create New"
+                app:layout_constraintBottom_toTopOf="@+id/search"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/nav_view"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            app:headerLayout="@layout/nav_header_layout"
+            app:menu="@menu/nav_menu" />
+
+    </androidx.drawerlayout.widget.DrawerLayout>
+
+
+</RelativeLayout>
+
+

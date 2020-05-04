@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">TaffyoSales</string>
+    <string name="forget_password">Forget Password</string>
+    <string name="need_account">Need Account ?</string>
+    <string name="login">Login</string>
+    <string name="enter_your_password">Enter Your Password</string>
+    <string name="taffyo_sales">Taffyo Sales</string>
+    <string name="enter_your_email_id">Enter your Email Id</string>
+    <string name="search">Search...</string>
+
+    <string name="openNavDrawer">Navigation Drawer Open</string>
+    <string name="closeNavDrawer">Navigation Drawer Close</string>
+</resources>
