@@ -7,7 +7,6 @@ public class ProductDetails {
     String productName;
     String quantity;
 
-
     public FieldValue getLastTimestamp() {
         return lastTimestamp;
     }

@@ -103,7 +103,6 @@ public class Add_Product extends AppCompatActivity {
                                 .collection("store").whereEqualTo("user_id",mAuth.getUid()).addSnapshotListener(new EventListener<QuerySnapshot>() {
                             @Override
                             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-
                                 if (!queryDocumentSnapshots.isEmpty()){
                                     String store_id=queryDocumentSnapshots.getDocuments().get(0).getString("store_id");
                                     Log.e(TAG, "onEvent: "+store_id);

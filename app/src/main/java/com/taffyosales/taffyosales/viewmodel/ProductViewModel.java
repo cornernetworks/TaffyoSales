@@ -14,5 +14,6 @@ public class ProductViewModel extends ViewModel {
 //
     public void add_Product(String uid, Product product,String store_id) {
         productRepository.addProduct(uid,product,store_id);
+
     }
 }

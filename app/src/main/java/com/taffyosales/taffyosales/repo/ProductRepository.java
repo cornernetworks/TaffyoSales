@@ -26,7 +26,6 @@ public class ProductRepository {
 
         Uri uri= Uri.parse(product.getImageUri());
         WriteBatch batch = firebaseFirestore.batch();
-
         storageReference.putFile(uri).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 storageReference.getDownloadUrl().addOnSuccessListener(uri1 -> {
