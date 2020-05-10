@@ -25,8 +25,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -45,6 +43,7 @@ import com.taffyosales.taffyosales.adapter.UserAdapter;
 import com.taffyosales.taffyosales.databinding.ActivityMainBinding;
 import com.taffyosales.taffyosales.model.Store;
 import com.taffyosales.taffyosales.model.Users;
+import com.taffyosales.taffyosales.ui.product.Add_Product;
 import com.taffyosales.taffyosales.ui.store.Add_Store;
 import com.taffyosales.taffyosales.ui.auth.LoginActivity;
 import com.taffyosales.taffyosales.ui.search.Search;
@@ -52,8 +51,6 @@ import com.taffyosales.taffyosales.util.ViewAnimation;
 import com.taffyosales.taffyosales.viewmodel.UserViewModel;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
-
-import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 
@@ -136,15 +133,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         FirebaseFirestore.getInstance().collection("stores").document(mAuth.getUid()).collection("store").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                QuerySnapshot snapshot=task.getResult();
-                if (snapshot.isEmpty()){
+                QuerySnapshot snapshot = task.getResult();
+                if (snapshot.isEmpty()) {
                     binding.fab.setVisibility(View.INVISIBLE);
-                }else{
+                } else {
                     binding.fab.setVisibility(View.VISIBLE);
                 }
             }
         });
 
+//        binding.createNew.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+
+//            }
+//        });
 
         binding.fab.setOnClickListener(v -> {
             isRorate = ViewAnimation.rotateFab(v, !isRorate);
@@ -169,6 +172,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
         binding.createNew.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, Add_Product.class);
+            startActivity(intent);
             Toast.makeText(this, "createNew Clicked", Toast.LENGTH_SHORT).show();
         });
 
@@ -229,8 +234,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Exception error = result.getError();
             }
         }
-
-
     }
 
     private void setUpRecyclerView() {

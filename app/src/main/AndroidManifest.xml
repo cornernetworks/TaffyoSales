@@ -15,7 +15,7 @@
         <activity android:name=".ui.store.uploadSignature"></activity>
         <activity android:name=".ui.store.Add_Store" />
         <activity android:name=".ui.search.Search" />
-        <activity android:name=".ui.search.Add_Product" />
+        <activity android:name=".ui.product.Add_Product" />
         <activity android:name=".ui.auth.RegisterActivity" />
         <activity android:name=".ui.auth.LoginActivity" />
         <activity android:name=".ui.home.MainActivity">
