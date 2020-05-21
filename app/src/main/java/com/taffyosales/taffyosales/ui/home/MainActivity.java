@@ -53,6 +53,7 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -176,6 +177,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(intent);
             Toast.makeText(this, "createNew Clicked", Toast.LENGTH_SHORT).show();
         });
+
+        FirebaseFirestore.getInstance().collection("stores").document(mAuth.getUid()).collection("store")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException e) {
+                        if (querySnapshot!=null){
+                            List<DocumentSnapshot> documentSnapshot=querySnapshot.getDocuments();
+                            for (DocumentSnapshot document:documentSnapshot){
+                                Log.e(TAG, "onEvent: "+document);
+                            }}
+                    }
+                });
+
+
 
 
         profileDp.setOnClickListener(v -> {

@@ -17,19 +17,41 @@ import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.taffyosales.taffyosales.model.Product;
 import com.taffyosales.taffyosales.model.Users;
 
+import java.util.List;
 import java.util.Random;
 
 
 public class UserRepository {
 
-    private static final String TAG = "UserRepository";
+//    private OnTaskComplete onTaskComplete;
 
+
+    //initialize variables
+    private static final String TAG = "UserRepository";
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
     private CollectionReference userRef = firebaseFirestore.collection("Users");
     private StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("profile_images").child(getSaltString() + ".jpg");
 
+
+
+
+//    //initialize interface
+//    public UserRepository(OnTaskComplete taskComplete) {
+//        this.onTaskComplete = taskComplete;
+//    }
+
+
+
+
+
+
+
+
+
+    //add data
     public Task<Void> addUser(Users users) {
         DocumentReference userRefs = userRef.document(users.getUser_id());
         WriteBatch batch = firebaseFirestore.batch();
@@ -57,10 +79,6 @@ public class UserRepository {
     }
 
 
-    public interface OnFirestoreTaskComplete {
-        void addUserData();
-    }
-
     protected String getSaltString() {
         String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder salt = new StringBuilder();
@@ -73,5 +91,21 @@ public class UserRepository {
         return saltStr;
 
     }
+
+
+
+
+    //get data
+
+
+
+
+
+
+//    //initialize all method you pass in viewmodel here
+//    interface OnTaskComplete {
+//        void allUserList(List<Product> productList);
+//        void onError(Exception e);
+//    }
 
 }

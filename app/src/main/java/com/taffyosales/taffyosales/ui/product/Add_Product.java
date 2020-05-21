@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -36,6 +38,7 @@ public class Add_Product extends AppCompatActivity {
     ActivityAddProductBinding binding;
     private static final String TAG = "Add_Product";
     private Uri imageUri;
+    private String productType;
     FirebaseAuth mAuth;
     ProductViewModel viewModel;
 
@@ -46,12 +49,38 @@ public class Add_Product extends AppCompatActivity {
         binding = ActivityAddProductBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-        viewModel=new ViewModelProvider(this).get(ProductViewModel.class);
+        viewModel = new ViewModelProvider(this).get(ProductViewModel.class);
         imageUri = null;
 
+        productType = null;
 
 
-        mAuth=FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.product_type, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        binding.productType.setAdapter(adapter);
+
+
+        binding.productType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                String item = parent.getItemAtPosition(position).toString();
+                Log.e(TAG, "onItemSelected: " + item);
+
+                if (!item.equals("Select_Product_type")) {
+                    productType = item;
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         binding.productImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,28 +119,39 @@ public class Add_Product extends AppCompatActivity {
                     } else if (cost.isEmpty()) {
                         binding.cost.setError("Provide your cost first!");
                         binding.cost.requestFocus();
-                    } else if (productId.isEmpty() && productName.isEmpty() && quantity.isEmpty() && sellingPrice.isEmpty() && cost.isEmpty() ) {
+                    } else if (productId.isEmpty() && productName.isEmpty() && quantity.isEmpty() && sellingPrice.isEmpty() && cost.isEmpty()) {
                         Toast.makeText(Add_Product.this, "Fields Empty!", Toast.LENGTH_SHORT).show();
-                    } else if (!productId.isEmpty() && !productName.isEmpty() && !quantity.isEmpty() && !sellingPrice.isEmpty() && !cost.isEmpty() ) {
+                    } else if (!productId.isEmpty() && !productName.isEmpty() && !quantity.isEmpty() && !sellingPrice.isEmpty() && !cost.isEmpty()) {
 
-                        int costInt= Integer.parseInt(cost);
-                        int sellingPriceInt= Integer.parseInt(sellingPrice);
-                        int quantityInt= Integer.parseInt(quantity);
-                        Product product=new Product(productId,productName,imageUri.toString(),quantityInt,sellingPriceInt,costInt, FieldValue.serverTimestamp());
+                        int costInt = Integer.parseInt(cost);
+                        int sellingPriceInt = Integer.parseInt(sellingPrice);
+                        int quantityInt = Integer.parseInt(quantity);
+                        Product product = new Product(productId, productName, quantityInt, sellingPriceInt, costInt, FieldValue.serverTimestamp());
 
                         FirebaseFirestore.getInstance().collection("stores").document(mAuth.getUid())
-                                .collection("store").whereEqualTo("user_id",mAuth.getUid()).addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                .collection("store").whereEqualTo("user_id", mAuth.getUid()).addSnapshotListener(new EventListener<QuerySnapshot>() {
                             @Override
                             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                                if (!queryDocumentSnapshots.isEmpty()){
-                                    String store_id=queryDocumentSnapshots.getDocuments().get(0).getString("store_id");
-                                    Log.e(TAG, "onEvent: "+store_id);
-                                    viewModel.add_Product(mAuth.getUid(),product,store_id);
+                                if (!queryDocumentSnapshots.isEmpty()) {
+                                    String store_id = queryDocumentSnapshots.getDocuments().get(0).getString("store_id");
+                                    Log.e(TAG, "onEvent: " + store_id);
+
+                                    if (!productType.equals("Select_Product_type")) {
+                                        Log.e(TAG, "onEvent: " + productType);
+                                        product.setProduct_type(productType);
+                                        viewModel.add_Product(mAuth.getUid(), product, store_id,imageUri.toString());
+
+                                        Intent intent=new Intent(Add_Product.this,MainActivity.class);
+                                        startActivity(intent);
+                                        finish();
+
+                                    }
+
+
                                 }
 
                             }
                         });
-
 
 
                     }

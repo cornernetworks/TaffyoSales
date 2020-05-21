@@ -10,4 +10,17 @@
 
     <string name="openNavDrawer">Navigation Drawer Open</string>
     <string name="closeNavDrawer">Navigation Drawer Close</string>
+
+
+
+    <string-array name="product_type">
+        <item>Select_Product_type</item>
+        <item>Soap</item>
+        <item>liquesd</item>
+        <item>rice</item>
+        <item>snacks</item>
+        <item>coldrink</item>
+        <item>masales</item>
+        <item>souces</item>
+    </string-array>
 </resources>

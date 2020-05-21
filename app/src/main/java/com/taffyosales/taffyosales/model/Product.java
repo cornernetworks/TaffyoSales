@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 public class Product {
     String Product_id;
     String Produc_name;
+    String Product_type;
     String imageUri;
     int Quantity;
     int Selling_price;
@@ -14,8 +15,27 @@ public class Product {
 
     FieldValue timestamp;
 
+    public Product(String product_id, String produc_name, String product_type, String imageUri, int quantity, int selling_price, int cost_price, FieldValue timestamp) {
+        Product_id = product_id;
+        Produc_name = produc_name;
+        Product_type = product_type;
+        this.imageUri = imageUri;
+        Quantity = quantity;
+        Selling_price = selling_price;
+        Cost_price = cost_price;
+        this.timestamp = timestamp;
+    }
 
-    public Product(String product_id, String produc_name, String imageUri, int quantity, int selling_price, int cost_price, FieldValue timestamp) {
+
+    public String getProduct_type() {
+        return Product_type;
+    }
+
+    public void setProduct_type(String product_type) {
+        Product_type = product_type;
+    }
+
+    public Product(String product_id, String produc_name, int quantity, int selling_price, int cost_price, FieldValue timestamp) {
         Product_id = product_id;
         Produc_name = produc_name;
         this.imageUri = imageUri;
@@ -33,7 +53,7 @@ public class Product {
         this.timestamp = timestamp;
     }
 
-    public Product(){
+    public Product() {
     }
 
     public String getProduct_id() {
