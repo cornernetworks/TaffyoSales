@@ -71,12 +71,16 @@ public class UserRepository {
                     Uri uris = uri1;
                     batch.update(userRefs, "user_image", uris.toString());
                     batch.commit();
+
 //                    Log.e(TAG, "user download uri is " + uris);
                 });
             }
         });
         return null;
     }
+
+
+
 
 
     protected String getSaltString() {
