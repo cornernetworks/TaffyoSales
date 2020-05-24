@@ -46,7 +46,7 @@ public class ProductRepository {
                     Uri uris = uri1;
                     product.setImageUri(uris.toString());
                     Log.e(TAG, "addProduct: " + uris);
-                    firebaseFirestore.collection("Products").document(store_id).collection(product.getProduct_type()).document(product.getProduct_id())
+                    firebaseFirestore.collection("products").document(store_id).collection(product.getProduct_type()).document(product.getProduct_id())
                             .set(product).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {

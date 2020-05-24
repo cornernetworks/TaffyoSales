@@ -32,7 +32,7 @@ public class UserRepository {
     //initialize variables
     private static final String TAG = "UserRepository";
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-    private CollectionReference userRef = firebaseFirestore.collection("Users");
+    private CollectionReference userRef = firebaseFirestore.collection("users");
     private StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("profile_images").child(getSaltString() + ".jpg");
 
 

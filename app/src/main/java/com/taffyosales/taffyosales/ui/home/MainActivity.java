@@ -39,8 +39,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.taffyosales.taffyosales.R;
+import com.taffyosales.taffyosales.adapter.ShowProductAdapter;
 import com.taffyosales.taffyosales.adapter.UserAdapter;
 import com.taffyosales.taffyosales.databinding.ActivityMainBinding;
+import com.taffyosales.taffyosales.model.Product;
 import com.taffyosales.taffyosales.model.Store;
 import com.taffyosales.taffyosales.model.Users;
 import com.taffyosales.taffyosales.ui.product.Add_Product;
@@ -48,6 +50,7 @@ import com.taffyosales.taffyosales.ui.store.Add_Store;
 import com.taffyosales.taffyosales.ui.auth.LoginActivity;
 import com.taffyosales.taffyosales.ui.search.Search;
 import com.taffyosales.taffyosales.util.ViewAnimation;
+import com.taffyosales.taffyosales.viewmodel.ProductViewModel;
 import com.taffyosales.taffyosales.viewmodel.UserViewModel;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -59,17 +62,17 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-
     private static final String TAG = "MainActivity";
     FirebaseAuth mAuth;
     ActivityMainBinding binding;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference userRef = db.collection("Users");
     private ArrayList<Users> mExampleList;
-    private RecyclerView mRecyclerView;
-    private UserAdapter mAdapter;
+    private RecyclerView recyclerView;
+    private ShowProductAdapter mAdapter;
     private StorageReference mStorageRef;
     UserViewModel viewModel;
+    ProductViewModel productViewModel;
     private Uri imageUri;
     private boolean isRorate = false;
 
@@ -89,9 +92,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ViewAnimation.init(binding.search);
         ViewAnimation.init(binding.qrScan);
         ViewAnimation.init(binding.createNew);
-
+        recyclerView= findViewById(R.id.recyclerView);
 
         viewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        productViewModel=new ViewModelProvider(this).get(ProductViewModel.class);
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -126,10 +130,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, pairs);
 
             startActivity(intent, options.toBundle());
-
             Toast.makeText(this, "Search Clicked", Toast.LENGTH_SHORT).show();
             Log.e("Search", "Search Clicked");
-
         });
 
         FirebaseFirestore.getInstance().collection("stores").document(mAuth.getUid()).collection("store").get().addOnCompleteListener(task -> {
@@ -142,13 +144,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         });
-
-//        binding.createNew.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-
-//            }
-//        });
 
         binding.fab.setOnClickListener(v -> {
             isRorate = ViewAnimation.rotateFab(v, !isRorate);
@@ -178,6 +173,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(this, "createNew Clicked", Toast.LENGTH_SHORT).show();
         });
 
+
+        FirebaseFirestore.getInstance().collection("stores").document(mAuth.getUid())
+                .collection("store").whereEqualTo("user_id", mAuth.getUid()).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                if (!queryDocumentSnapshots.isEmpty()) {
+                    String store_id = queryDocumentSnapshots.getDocuments().get(0).getString("store_id");
+                    Log.e(TAG, "onEvent: " + store_id);
+                    viewModel.setStoerId(store_id);
+                }
+
+            }
+        });
+
+
+
+
+
+
+
+
+
         FirebaseFirestore.getInstance().collection("stores").document(mAuth.getUid()).collection("store")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
@@ -189,9 +206,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             }}
                     }
                 });
-
-
-
 
         profileDp.setOnClickListener(v -> {
             showDialog();
@@ -215,24 +229,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
 
-        FirebaseFirestore.getInstance().collection("Users").document(mAuth.getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot document, @Nullable FirebaseFirestoreException e) {
-                if (document.exists()) {
-                    String name = document.getString("name");
-                    String email_id = document.getString("email_id");
-                    nav_user.setText(email_id);
-                    nav_name.setText(name);
-                    Glide.with(MainActivity.this).asBitmap().load(document.getString("user_image")).into(imageView);
-                    Glide.with(MainActivity.this).asBitmap().load(document.getString("user_image")).into(profileDp);
+//        FirebaseFirestore.getInstance().collection("Users").document(mAuth.getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+//            @Override
+//            public void onEvent(@Nullable DocumentSnapshot document, @Nullable FirebaseFirestoreException e) {
+//                if (document.exists()) {
+//                    String name = document.getString("name");
+//                    String email_id = document.getString("email_id");
+//                    nav_user.setText(email_id);
+//                    nav_name.setText(name);
+//                    Glide.with(MainActivity.this).asBitmap().load(document.getString("user_image")).into(imageView);
+//                    Glide.with(MainActivity.this).asBitmap().load(document.getString("user_image")).into(profileDp);
+//
+//                }
+//            }
+//        });
+//        setUpRecyclerView();
+//        mAdapter.notifyDataSetChanged();
 
-                }
-            }
-        });
 
 
-        setUpRecyclerView();
-        mAdapter.startListening();
+
     }
 
 
@@ -251,29 +267,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private void setUpRecyclerView() {
-        Query query = userRef.orderBy("name", Query.Direction.ASCENDING);
-        FirestoreRecyclerOptions<Users> options = new FirestoreRecyclerOptions.Builder<Users>()
-                .setQuery(query, Users.class)
-                .build();
-        mAdapter = new UserAdapter(options);
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(mAdapter);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mAdapter.startListening();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mAdapter.stopListening();
-    }
+//    private void setUpRecyclerView() {
+//
+//        FirebaseFirestore.getInstance().collection("stores").document(mAuth.getUid()).collection("store").addSnapshotListener(new EventListener<QuerySnapshot>() {
+//            @Override
+//            public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException e) {
+//                String store_id=querySnapshot.getDocuments().get(0).getId();
+//                Log.e("Store_id2", "StoreId is "+store_id);
+////                mAdapter=new ShowProductAdapter(querySnapshot.toObjects(Product.class),MainActivity.this);
+//            }
+//        });
+//
+//
+//        recyclerView.setHasFixedSize(true);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerView.setAdapter(mAdapter);
+//    }
 
 
     @Override
@@ -291,7 +300,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Log.e(TAG, "onNavigationItemSelected: " + item);
                 break;
             default:
-
         }
 
 
@@ -308,8 +316,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         LayoutInflater inflater = LayoutInflater.from(this);
         View view = inflater.inflate(R.layout.profile_dialog, null);
-
-
         CircleImageView userProfile = (CircleImageView) view.findViewById(R.id.user_profile);
         TextView email = view.findViewById(R.id.emailId);
         TextView username = view.findViewById(R.id.username);
